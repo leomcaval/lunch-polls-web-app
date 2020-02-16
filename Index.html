@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<!-- Use a templated HTML printing scriptlet to import common stylesheet. -->
+<?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <h1 id="main-heading"><b>Loading...</b></h1>
+    <h1 hidden id="main-heading-2"><b>Lunch Poll Web App - Results</b> </h1>
+    <div id="chart_div"></div>
+    <div id="table_div"></div>
+    <p id="demo"><p>
+    <p id="demo2"><p>
+    <p hidden id="feat"><i><b>Note:</b> Voting multiple times is not allowed and you can only vote for up to 3 restaurants.</i><p>
+    <div class="hidden" id="error-message">
+    </div>
+  </body>
+</html>
+
+<!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+<?!= HtmlService.createHtmlOutputFromFile('JavaScript').getContent(); ?>

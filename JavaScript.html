@@ -1,0 +1,101 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript"  src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script>
+
+  google.charts.load('current', {packages: ['corechart', 'bar','table']});
+  //google.charts.setOnLoadCallback(drawBasic);
+  
+  $(function() {
+    google.setOnLoadCallback(sendQuery);
+  });
+
+  function sendQuery() {
+    google.script.run
+      .withSuccessHandler(drawBasic)
+      .withFailureHandler(function(msg) {
+            $('#main-heading').text(msg);
+            $('#main-heading').addClass("error");
+            $('#error-message').show();
+          })
+      .getFormData();
+  }
+
+  
+  function drawBasic(response) {
+    
+    $('#main-heading').addClass("hidden");
+    if (response == null) {
+      alert('Error: results visualization - source data. Contact Leo!')
+      return;
+    }
+    
+    else {
+    $('#main-heading-2').addClass("shown");
+    $('#feat').addClass("shown");
+
+    var rank = new Array(response[0].length);
+    var votersLog = new Array(response[1].length);
+    
+    //rank
+    for (var i = 0; i < response[0].length; i++) {
+      //document.getElementById("demo").innerHTML += response[0][i] + "<br>";
+      rank[i] = JSON.parse(response[0][i]);
+    }
+    
+    //votersLog
+    for (var i = 0; i < response[1].length; i++) {
+      votersLog[i] = JSON.parse(response[1][i]);
+      //document.getElementById("demo2").innerHTML += votersLog[i].name + ": " + votersLog[i].votes + "<br>";
+    }
+    
+        
+    //rank chart
+    var dataArray = []; //convert to dataTable
+    for (i in rank) {
+        dataArray.push([rank[i].restaurant, rank[i].numVoters, rank[i].numVoters.toString()+": "+rank[i].voters.toString()]);
+    }
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Restaurants');
+    data.addColumn('number', 'Count');
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addRows(dataArray);
+    
+    var options = {
+        title: 'Vote Counting',
+        chartArea: {'width': '50%', 'height': '80%'},
+        'width':1200,
+        'height':500,
+        legend: {position: 'none'},
+        vAxis : { 
+        textStyle : {
+            fontSize: 14 // or the number you want
+        }
+    }
+    };
+
+    var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+      
+    
+    //votersLog table
+    var data2Array = []; //convert to dataTable
+    for (i in votersLog) {
+        data2Array.push([votersLog[i].name,votersLog[i].votes.toString()]);
+    }
+    var data2 = google.visualization.arrayToDataTable(data2Array,true);
+//    data2.setCell(22, 2, 15, 'Fifteen', {style: 'font-style:bold; font-size:22px;'});
+    var table = new google.visualization.Table(document.getElementById('table_div'));
+    table.draw(data2, {showRowNumber: true, width: '80%', height: '80%'});
+       
+  }
+}
+    
+ 
+    
+   
+</script>
+
+
